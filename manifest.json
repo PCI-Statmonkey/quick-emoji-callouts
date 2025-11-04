@@ -1,0 +1,9 @@
+{
+  "id": "quick-emoji-callouts",
+  "name": "Quick Emoji Callouts",
+  "version": "0.1.0",
+  "minAppVersion": "1.4.0",
+  "description": "Right-click menu to insert colored emoji + bound tags (e.g., 🟥 #threat). Includes a settings GUI.",
+  "author": "StatMonkey & ChatGPT",
+  "isDesktopOnly": false
+}
