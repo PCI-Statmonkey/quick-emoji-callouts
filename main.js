@@ -1,6 +1,6 @@
 'use strict';
 
-const { Plugin, Menu, Notice, PluginSettingTab, Setting } = require('obsidian');
+const { Plugin, Notice, PluginSettingTab, Setting } = require('obsidian');
 
 /** @typedef {{emoji:string, tag:string, label:string}} Callout */
 /** @typedef {{
@@ -40,16 +40,22 @@ module.exports = class QuickEmojiCallouts extends Plugin {
     this.registerEvent(this.app.workspace.on('editor-menu', (menu, editor, view) => {
       if (!view || !editor) return;
 
-      const sub = new Menu();
+      menu.addItem((item) => {
+        item.setTitle('Callouts')
+          .setIcon('list'); // safe built-in icon
 
-      if (!this.settings.favorites || this.settings.favorites.length === 0) {
-        sub.addItem(i => i.setTitle("No favorites yet (open settings)")
-          .onClick(() => new Notice("Open Settings → Quick Emoji Callouts to add favorites.")));
-      } else {
+        const sub = item.setSubmenu();
+
+        if (!this.settings.favorites || this.settings.favorites.length === 0) {
+          sub.addItem(i => i.setTitle("No favorites yet (open settings)")
+            .onClick(() => new Notice("Open Settings → Quick Emoji Callouts to add favorites.")));
+          return;
+        }
+
         for (const c of this.settings.favorites) {
           const title = `${c.emoji} ${c.label}`;
-          sub.addItem((item) => {
-            item.setTitle(title).onClick(() => {
+          sub.addItem((subItem) => {
+            subItem.setTitle(title).onClick(() => {
               const sel = editor.getSelection();
               const insert = this.buildInsert(c, sel);
 
@@ -70,13 +76,7 @@ module.exports = class QuickEmojiCallouts extends Plugin {
             });
           });
         }
-      }
-
-      menu.addItem((item) =>
-        item.setTitle('Callouts')
-            .setIcon('list') // safe built-in icon
-            .setSubmenu(sub)
-      );
+      });
     }));
   }
 
